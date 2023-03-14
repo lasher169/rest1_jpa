@@ -2,6 +2,7 @@ package com.example.rest1.controllers;
 
 import com.example.rest1.entities.CustomerEntity;
 import com.example.rest1.respositories.CustomerRepository;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,7 @@ public class FirstWebService {
     @GetMapping("/findAllCustomers")
     public String findCustomers(){
         logger.debug("about to call find all customers");
-        findAllCustomers();
-        return "";
+        return new Gson().toJson(findAllCustomers());
     }
 
     private List<CustomerEntity> findAllCustomers(){
@@ -38,14 +38,14 @@ public class FirstWebService {
         List<CustomerEntity> customers = new ArrayList<>();
         logger.debug("inside find all customers");
         Iterable<CustomerEntity> personList = customerRepository.findAll();
-        Iterator<CustomerEntity> persons = personList.iterator();
 
+        personList.forEach(person -> customers.add(person));
 
-        while(persons.hasNext()){
-            CustomerEntity customerEntity = persons.next();
-            System.out.println("firstname ="+customerEntity.getFirstName() +" lastName = "+customerEntity.getLastName()+" postcde = "+customerEntity.getPostCode());
-            customers.add(customerEntity);
-        }
+//        while(personList.iterator().hasNext()){
+//            CustomerEntity customerEntity = persons.next();
+//            System.out.println("firstname ="+customerEntity.getFirstName() +" lastName = "+customerEntity.getLastName()+" postcde = "+customerEntity.getPostCode());
+//            customers.add(customerEntity);
+//        }
 
         Collections.sort(customers, Collections.reverseOrder());
 
@@ -53,7 +53,8 @@ public class FirstWebService {
             System.out.println("firstname ="+customer.getFirstName() +" lastName = "+customer.getLastName()+" postcde = "+customer.getPostCode());
         }
 
-        return null;
+
+        return customers;
     }
 
 }
