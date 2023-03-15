@@ -6,8 +6,9 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,10 +28,18 @@ public class FirstWebService {
         return "Greetings from Spring Boot!";
     }
 
-    @GetMapping("/findAllCustomers")
+    @GetMapping(value = "/findAllCustomers", produces = MediaType.APPLICATION_JSON_VALUE)
     public String findCustomers(){
         logger.debug("about to call find all customers");
         return new Gson().toJson(findAllCustomers());
+    }
+
+    @PostMapping(value = "/saveCustomer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveCustomer(@RequestBody CustomerEntity customerEntity){
+        logger.debug("about to save customer entity");
+        logger.debug("about to save customer entity=>"+customerEntity.getFirstName());
+        logger.debug("about to save address1 entity=>"+customerEntity.getAddress1());
+        customerRepository.save(customerEntity);
     }
 
     private List<CustomerEntity> findAllCustomers(){
@@ -48,11 +57,6 @@ public class FirstWebService {
 //        }
 
         Collections.sort(customers, Collections.reverseOrder());
-
-        for(CustomerEntity customer : customers){
-            System.out.println("firstname ="+customer.getFirstName() +" lastName = "+customer.getLastName()+" postcde = "+customer.getPostCode());
-        }
-
 
         return customers;
     }

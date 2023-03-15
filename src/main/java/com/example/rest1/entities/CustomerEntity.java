@@ -2,9 +2,11 @@ package com.example.rest1.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "person")
 public class CustomerEntity implements Comparable<CustomerEntity>{
 
